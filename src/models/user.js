@@ -12,7 +12,19 @@ const userSchema = Schema(
     password: {
       type: String,
       required: true
-    }
+    },
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ]
   },
   { timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" } }
 );
