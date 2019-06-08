@@ -8,7 +8,7 @@ const express = require("express");
 const router = express.Router();
 
 const { body } = require("express-validator/check");
-const { registerUser } = require("../controllers/user");
+const { registerUser, logInUser } = require("../controllers/user");
 
 router.get("/", (req, res) => {
   res.status(200).send("User Resource");
@@ -29,6 +29,23 @@ router.post(
       .withMessage("Password is required in the request body")
   ],
   registerUser
+);
+
+router.post(
+  "/login",
+  [
+    body("username")
+      .exists()
+      .trim()
+      .withMessage("Username is required in the request body")
+      .isLength({ max: 15 })
+      .withMessage("Username limited to a max of 15 characters"),
+    body("password")
+      .exists()
+      .trim()
+      .withMessage("Password is required in the request body")
+  ],
+  logInUser
 );
 
 module.exports = router;
