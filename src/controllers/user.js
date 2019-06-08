@@ -156,6 +156,49 @@ async function followUser(req, res, next) {
   }
 }
 
+async function unfollowUser(req, res, next) {
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    return next(new UnprocessableRequestError(err.mapped()));
+  }
+
+  try {
+    const { id: userToUnfollow } = req.params;
+    const accessToken = req.header("access-token");
+
+    const user = await User.findOne({ _id: userToUnfollow });
+    const currentUser = await getUserFromAccessToken(accessToken);
+
+    if (
+      user.followers.includes(currentUser._id) &&
+      currentUser.following.includes(user._id)
+    ) {
+      let indexUser = user.followers.indexOf(currentUser._id);
+      user.followers.splice(indexUser);
+
+      let indexCurrentUser = currentUser.following.indexOf(user._id);
+      currentUser.following.splice(indexCurrentUser);
+
+      await user.save();
+      await currentUser.save();
+      const response = {
+        message: `Unfollowed the user`,
+        status: 200
+      };
+      return res.status(response.status).send(response);
+    }
+
+    const response = {
+      message: `Sorry, you are not following the user to unfollow.`,
+      status: 200
+    };
+    return res.status(response.status).send(response);
+  } catch (error) {
+    const err = new ApiError(error);
+    return res.status(err.status).send(err);
+  }
+}
+
 async function getUserFromAccessToken(accessToken) {
   try {
     const result = await jwt.verify(accessToken, JWT_SECRET);
@@ -173,5 +216,6 @@ async function getUserFromAccessToken(accessToken) {
 module.exports = {
   registerUser,
   logInUser,
-  followUser
+  followUser,
+  unfollowUser
 };

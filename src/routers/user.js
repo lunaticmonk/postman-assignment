@@ -8,7 +8,7 @@ const express = require("express");
 const router = express.Router();
 
 const { body, header } = require("express-validator/check");
-const { registerUser, logInUser, followUser } = require("../controllers/user");
+const { registerUser, logInUser, followUser, unfollowUser } = require("../controllers/user");
 
 const { isAuthorized } = require("../policies/policy");
 
@@ -60,6 +60,18 @@ router.patch(
   ],
   isAuthorized,
   followUser
+);
+
+router.patch(
+  "/:id/unfollow",
+  [
+    header("access-token")
+      .exists()
+      .trim()
+      .withMessage("accessToken is required")
+  ],
+  isAuthorized,
+  unfollowUser
 );
 
 module.exports = router;
