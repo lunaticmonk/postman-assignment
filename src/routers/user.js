@@ -7,8 +7,10 @@
 const express = require("express");
 const router = express.Router();
 
-const { body } = require("express-validator/check");
-const { registerUser, logInUser } = require("../controllers/user");
+const { body, header } = require("express-validator/check");
+const { registerUser, logInUser, followUser } = require("../controllers/user");
+
+const { isAuthorized } = require("../policies/policy");
 
 router.get("/", (req, res) => {
   res.status(200).send("User Resource");
@@ -46,6 +48,18 @@ router.post(
       .withMessage("Password is required in the request body")
   ],
   logInUser
+);
+
+router.patch(
+  "/:id/follow",
+  [
+    header("access-token")
+      .exists()
+      .trim()
+      .withMessage("accessToken is required")
+  ],
+  isAuthorized,
+  followUser
 );
 
 module.exports = router;

@@ -117,7 +117,61 @@ async function logInUser(req, res, next) {
   }
 }
 
+async function followUser(req, res, next) {
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    return next(new UnprocessableRequestError(err.mapped()));
+  }
+
+  try {
+    const { id: userToFollow } = req.params;
+    const accessToken = req.header("access-token");
+
+    const user = await User.findOne({ _id: userToFollow });
+    const currentUser = await getUserFromAccessToken(accessToken);
+
+    if (
+      !user.followers.includes(currentUser._id) &&
+      !currentUser.following.includes(user._id)
+    ) {
+      user.followers.push(currentUser._id);
+      currentUser.following.push(user._id);
+      await user.save();
+      await currentUser.save();
+      const response = {
+        message: `Followed`,
+        status: 200
+      };
+      return res.status(response.status).send(response);
+    }
+
+    const response = {
+      message: `Already following`,
+      status: 200
+    };
+    return res.status(response.status).send(response);
+  } catch (error) {
+    const err = new ApiError(error);
+    return res.status(err.status).send(err);
+  }
+}
+
+async function getUserFromAccessToken(accessToken) {
+  try {
+    const result = await jwt.verify(accessToken, JWT_SECRET);
+    const { username } = result;
+    const user = await User.findOne(
+      { username },
+      "name username followers following"
+    );
+    return user;
+  } catch (error) {
+    return new Error(`User not found`);
+  }
+}
+
 module.exports = {
   registerUser,
-  logInUser
+  logInUser,
+  followUser
 };
