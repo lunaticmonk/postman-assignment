@@ -10,7 +10,7 @@ const router = express.Router();
 const { body, header } = require("express-validator/check");
 const { createTweet, getTweet, deleteTweet } = require("../controllers/tweet");
 
-const { isAuthorized } = require("../policies/policy");
+const { isAuthorized, isOwnerOfTweet } = require("../policies/policy");
 
 router.get("/", (req, res) => {
   res.status(200).send("Tweet Resource");
@@ -36,6 +36,6 @@ router.post(
 
 router.get("/:id", getTweet);
 
-router.delete("/:id", isAuthorized, deleteTweet);
+router.delete("/:id", isAuthorized, isOwnerOfTweet, deleteTweet);
 
 module.exports = router;
