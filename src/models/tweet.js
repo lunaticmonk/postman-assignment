@@ -13,7 +13,19 @@ const tweetSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true
-    }
+    },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ],
+    retweets: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ]
   },
   { timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" } }
 );
