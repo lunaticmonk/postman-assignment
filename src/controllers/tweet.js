@@ -79,7 +79,27 @@ async function getTweet(req, res, next) {
   }
 }
 
+async function deleteTweet(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const tweet = await Tweet.findOneAndDelete({ _id: id });
+
+    const response = {
+      message: `Tweet deleted`,
+      status: 200
+    };
+    return res.status(response.status).send(response);
+  } catch (error) {
+    const err = new ApiError(
+      `Tweet could not be deleted. It may have deleted already. Unknown error.`
+    );
+    return res.status(err.status).send(err);
+  }
+}
+
 module.exports = {
   createTweet,
-  getTweet
+  getTweet,
+  deleteTweet
 };
