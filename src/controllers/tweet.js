@@ -37,7 +37,7 @@ async function createTweet(req, res, next) {
       tweet: {
         _id: tweet._id,
         body: tweet.body,
-        author
+        author: tweet.author
       },
       message: `Tweet posted successfully`,
       status: 201
