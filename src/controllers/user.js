@@ -205,7 +205,7 @@ async function getUserFromAccessToken(accessToken) {
     const { username } = result;
     const user = await User.findOne(
       { username },
-      "name username followers following"
+      "_id name username followers following"
     );
     return user;
   } catch (error) {
@@ -217,5 +217,6 @@ module.exports = {
   registerUser,
   logInUser,
   followUser,
-  unfollowUser
+  unfollowUser,
+  getUserFromAccessToken
 };
