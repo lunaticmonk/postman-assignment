@@ -14,6 +14,7 @@ const { getUserFromAccessToken } = require("../controllers/user");
 
 const ApiError = require("../errors/api");
 const UnprocessableRequestError = require("../errors/unprocessablerequest");
+const NotFoundError = require("../errors/notfound");
 
 async function createTweet(req, res, next) {
   const err = validationResult(req);
@@ -49,6 +50,36 @@ async function createTweet(req, res, next) {
   }
 }
 
+async function getTweet(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const tweet = await Tweet.findOne({ _id: id }).populate(
+      "author",
+      "username followers following"
+    );
+
+    if (tweet) {
+      const response = {
+        tweet: {
+          _id: tweet._id,
+          body: tweet.body,
+          author: tweet.author
+        },
+        message: `Tweet returned successfully`,
+        status: 200
+      };
+      return res.status(response.status).send(response);
+    }
+    const err = new NotFoundError("Tweet not found");
+    return res.status(err.status).send(err);
+  } catch (error) {
+    const err = new ApiError("Failure getting the tweet. Unknown error.");
+    return res.status(err.status).send(err);
+  }
+}
+
 module.exports = {
-  createTweet
+  createTweet,
+  getTweet
 };

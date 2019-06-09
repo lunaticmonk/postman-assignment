@@ -8,7 +8,7 @@ const express = require("express");
 const router = express.Router();
 
 const { body, header } = require("express-validator/check");
-const { createTweet } = require("../controllers/tweet");
+const { createTweet, getTweet } = require("../controllers/tweet");
 
 const { isAuthorized } = require("../policies/policy");
 
@@ -33,5 +33,7 @@ router.post(
   isAuthorized,
   createTweet
 );
+
+router.get("/:id", getTweet);
 
 module.exports = router;
