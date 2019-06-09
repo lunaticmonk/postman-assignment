@@ -8,7 +8,12 @@ const express = require("express");
 const router = express.Router();
 
 const { body, header } = require("express-validator/check");
-const { createTweet, getTweet, deleteTweet } = require("../controllers/tweet");
+const {
+  createTweet,
+  getTweet,
+  deleteTweet,
+  likeTweet
+} = require("../controllers/tweet");
 
 const { isAuthorized, isOwnerOfTweet } = require("../policies/policy");
 
@@ -32,6 +37,18 @@ router.post(
   ],
   isAuthorized,
   createTweet
+);
+
+router.patch(
+  "/:id/like",
+  [
+    header("access-token")
+      .exists()
+      .trim()
+      .withMessage("accessToken is required")
+  ],
+  isAuthorized,
+  likeTweet
 );
 
 router.get("/:id", getTweet);
