@@ -4,6 +4,7 @@ const cors = require("cors");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 
 const userRouter = require("./routers/user");
 const tweetRouter = require("./routers/tweet");
@@ -32,6 +33,8 @@ class Server {
       optionsSuccessStatus: 200
     };
     this.app.use(cors(corsOptions));
+
+    this.app.use(morgan("tiny"));
   }
 
   routes() {
