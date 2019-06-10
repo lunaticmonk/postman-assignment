@@ -31,7 +31,8 @@ async function createTweet(req, res, next) {
       body,
       author
     });
-    const tweet = await newTweet.save();
+    let tweet = await newTweet.save();
+    tweet = await tweet.populate("author", "username following followers").execPopulate();
 
     const response = {
       tweet: {
