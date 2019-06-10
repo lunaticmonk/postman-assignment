@@ -25,6 +25,16 @@ const tweetSchema = Schema(
         type: Schema.Types.ObjectId,
         ref: "User"
       }
+    ],
+    parentTweet: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    },
+    replies: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tweet"
+      }
     ]
   },
   { timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" } }
