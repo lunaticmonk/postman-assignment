@@ -45,12 +45,13 @@ describe("TWEET", () => {
       { headers: { "access-token": accessToken } }
     );
 
-    const { body, _id } = result.data.tweet;
+    const { body, _id, author } = result.data.tweet;
     tweetId = _id;
 
     expect(body)
       .to.equal(newTweet.body)
       .length.lessThan(140);
+    expect(author.username).to.equal(user.username);
   });
 
   it("should retrieve a tweet", async () => {
