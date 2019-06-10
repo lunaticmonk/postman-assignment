@@ -13,7 +13,8 @@ const {
   getTweet,
   deleteTweet,
   likeTweet,
-  unlikeTweet
+  unlikeTweet,
+  retweetTweet
 } = require("../controllers/tweet");
 
 const { isAuthorized, isOwnerOfTweet } = require("../policies/policy");
@@ -62,6 +63,18 @@ router.patch(
   ],
   isAuthorized,
   unlikeTweet
+);
+
+router.patch(
+  "/:id/retweet",
+  [
+    header("access-token")
+      .exists()
+      .trim()
+      .withMessage("accessToken is required")
+  ],
+  isAuthorized,
+  retweetTweet
 );
 
 router.get("/:id", getTweet);

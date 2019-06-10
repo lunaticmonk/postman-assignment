@@ -177,10 +177,58 @@ async function unlikeTweet(req, res, next) {
   }
 }
 
+async function retweetTweet(req, res, next) {
+  try {
+    const { id: tweetId } = req.params;
+    const accessToken = req.header("access-token");
+    const user = await getUserFromAccessToken(accessToken);
+
+    const tweet = await Tweet.findOne({ _id: tweetId });
+
+    if (!tweet) {
+      const err = new NotFoundError(`Tweet not found`);
+      return res.status(err.status).send(err);
+    } else {
+      let message;
+      if (!tweet.retweets.includes(user._id)) {
+        tweet.retweets.push(user._id);
+        await tweet.save();
+        message = `Tweet retweeted successfully`;
+      } else {
+        let index = tweet.retweets.indexOf(user._id);
+        tweet.retweets.splice(index);
+        await tweet.save();
+        message = `Retweet undone`;
+      }
+      const response = {
+        tweet: {
+          _id: tweet._id,
+          body: tweet.body,
+          author: tweet.author,
+          likes: tweet.likes,
+          retweets: tweet.retweets
+        },
+        message,
+        status: 200
+      };
+
+      return res.status(response.status).send(response);
+    }
+    const err = new ApiError();
+    return res.status(err.status).send(err);
+  } catch (error) {
+    const err = new ApiError(
+      "Failure retweeting the tweet. Tweet not available."
+    );
+    return res.status(err.status).send(err);
+  }
+}
+
 module.exports = {
   createTweet,
   getTweet,
   deleteTweet,
   likeTweet,
-  unlikeTweet
+  unlikeTweet,
+  retweetTweet
 };
