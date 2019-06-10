@@ -28,7 +28,7 @@ const tweetSchema = Schema(
     ],
     parentTweet: {
       type: Schema.Types.ObjectId,
-      ref: "User"
+      ref: "Tweet"
     },
     replies: [
       {
