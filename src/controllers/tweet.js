@@ -54,10 +54,12 @@ async function getTweet(req, res, next) {
   try {
     const { id } = req.params;
 
-    const tweet = await Tweet.findOne({ _id: id }).populate(
-      "author",
-      "username followers following likes retweets replies isParent"
-    );
+    const tweet = await Tweet.findOne({ _id: id })
+      .populate("author", "username followers following")
+      .populate("likes", "username followers following")
+      .populate("retweets", "username followers following")
+      .populate("replies", "body author")
+      .populate("parentTweet");
 
     if (tweet) {
       const response = {
