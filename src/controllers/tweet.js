@@ -224,11 +224,59 @@ async function retweetTweet(req, res, next) {
   }
 }
 
+async function replyToTweet(req, res, next) {
+  try {
+    const { id: tweetId } = req.params;
+    const accessToken = req.header("access-token");
+
+    const tweet = await Tweet.findOne({ _id: tweetId });
+
+    if (!tweet) {
+      const err = new NotFoundError(`Tweet not found`);
+      return res.status(err.status).send(err);
+    } else {
+      const user = await getUserFromAccessToken(accessToken);
+      const { _id: author } = user;
+      const { body } = req.body;
+      const reply = new Tweet({
+        body,
+        author,
+        parentTweet: tweetId
+      });
+
+      const savedReply = await reply.save();
+
+      tweet.replies.push(savedReply._id);
+      await tweet.save();
+
+      const response = {
+        tweet: {
+          _id: savedReply._id,
+          body: savedReply.body,
+          author: savedReply.author,
+          likes: savedReply.likes,
+          retweets: savedReply.retweets,
+          parentTweet: savedReply.parentTweet
+        },
+        message: `Replied to the tweet successfully`,
+        status: 200
+      };
+
+      return res.status(response.status).send(response);
+    }
+  } catch (error) {
+    console.log(error);
+    const err = new ApiError("Failure replying to the tweet. Unknown error");
+    return res.status(err.status).send(err);
+  }
+}
+
 module.exports = {
   createTweet,
   getTweet,
   deleteTweet,
   likeTweet,
   unlikeTweet,
-  retweetTweet
+  retweetTweet,
+  replyToTweet
 };

@@ -14,7 +14,8 @@ const {
   deleteTweet,
   likeTweet,
   unlikeTweet,
-  retweetTweet
+  retweetTweet,
+  replyToTweet
 } = require("../controllers/tweet");
 
 const { isAuthorized, isOwnerOfTweet } = require("../policies/policy");
@@ -75,6 +76,24 @@ router.patch(
   ],
   isAuthorized,
   retweetTweet
+);
+
+router.post(
+  "/:id/reply",
+  [
+    header("access-token")
+      .exists()
+      .trim()
+      .withMessage("accessToken is required"),
+    body("body")
+      .exists()
+      .trim()
+      .withMessage("Tweet body is required in the request body")
+      .isLength({ max: 140 })
+      .withMessage("Tweet body limited to a max of 140 characters")
+  ],
+  isAuthorized,
+  replyToTweet
 );
 
 router.get("/:id", getTweet);
