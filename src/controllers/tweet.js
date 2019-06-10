@@ -68,7 +68,7 @@ async function getTweet(req, res, next) {
           likes: tweet.likes,
           retweets: tweet.retweets,
           replies: tweet.replies,
-          isParent: tweet.isParent
+          parentTweet: tweet.parentTweet
         },
         message: `Tweet returned successfully`,
         status: 200
