@@ -1,7 +1,7 @@
 "use strict";
 
 const jwt = require("jsonwebtoken");
-const Tweet = require("../models/Tweet");
+const Tweet = require("../models/tweet");
 
 const NotFoundError = require("../errors/notfound");
 

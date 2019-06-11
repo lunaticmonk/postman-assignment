@@ -9,7 +9,7 @@
 
 const { validationResult } = require("express-validator/check");
 
-const Tweet = require("../models/Tweet");
+const Tweet = require("../models/tweet");
 const { getUserFromAccessToken } = require("../controllers/user");
 
 const ApiError = require("../errors/api");
