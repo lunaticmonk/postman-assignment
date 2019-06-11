@@ -23,12 +23,12 @@ To have an easy access, the API is deployed here: [https://postman.lunaticmonk.s
 
 ## Setup
 
-- Create a .env and copy the contents of .env.default in .env. Do it at both locations i.e at `/`.
-- Set the `API_BASE` config in `src/client/configs/app.js`.
+- Create a `.env` and copy the contents of `.env.default` in `.env`.
 - Create a MongoDB user and give it `dbOwner` access to the database. Set the credentials in .env as well.
 
 ```shell
 $ npm install -g yarn
+$ npm install -g nodemon
 $ git clone https://github.com/lunaticmonk/postman-assignment.git
 $ cd postman-assignment
 $ yarn
@@ -48,6 +48,21 @@ Mocha and Chai.js was used for the testing. Being a CRUD app with a very less bu
 To run the tests:
 
 `yarn test`
+
+## Completed functionalities
+
+- [x] User registration
+- [x] User login
+- [x] Follow, unfollow
+- [x] Create, read, delete tweet
+- [x] Unit/Integration tests
+- [x] Like/unlike a tweet
+- [x] Retweet
+- [x] Replies and threading
+
+## Scalability
+
+While deploying to production, pm2 can be used in cluster mode to utilize all the cpu cores. That way, we can increase the workers, thereby distributing the load and utilizing the full computing power.
 
 ## License
 
